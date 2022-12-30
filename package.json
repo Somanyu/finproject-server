@@ -4,6 +4,9 @@
   "description": "Financial Savings in Whatsapp using Twilio API.",
   "main": "index.js",
   "scripts": {
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www",
+    "serverstart": "SET DEBUG=librarymgmt:* & npm run devstart",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Somanyu",
@@ -11,5 +14,8 @@
   "dependencies": {
     "express": "^4.18.2",
     "twilio": "^3.84.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }
