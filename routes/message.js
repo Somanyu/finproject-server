@@ -24,7 +24,7 @@ router.get('/send', (req, res) => {
 
 })
 
-// https://230c-2405-201-a009-aa-ecee-a557-bc14-757e.ngrok.io/message/receive
+// https://fb59-2405-201-a009-aa-ecee-a557-bc14-757e.ngrok.io/message/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;

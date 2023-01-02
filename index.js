@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cors = require("cors");
 
 const app = express();
 
@@ -19,11 +20,15 @@ mongoose.connect(process.env.MONGODB_CONNECT,
     }
   )
 
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const messageRouter = require('./routes/message');
+const authRouter = require('./routes/auth');
+
 app.use('/message', messageRouter);
+app.use('/auth',authRouter);
 
 // app.get('/', (req, res) => {
 //     // Access the form value that was saved in the app's context
