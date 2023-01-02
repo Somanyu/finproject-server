@@ -18,25 +18,27 @@ exports.signUp = async (req, res) => {
     if (emailExists) {
         console.log('Email already exists.');
         res.status(401).send({ error: 'Email already exists.' })
+    } else {
+
+
+        // Hash the password.
+        const hashPassword = await bcrypt.hash(password, 8);
+
+        const user = new User({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: hashPassword
+        })
+
+        try {
+            const saveUser = await user.save()
+            console.log('Signed up successfully.');
+            res.status(200).send({ success: 'Signed up successfully.' })
+        } catch (error) {
+            console.log('Something went wrong.');
+            res.status(401).send({ error: 'Something went wrong.' })
+        }
+
     }
-
-    // Hash the password.
-    const hashPassword = await bcrypt.hash(password, 8);
-
-    const user = new User({
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: hashPassword
-    })
-
-    try {
-        const saveUser = await user.save()
-        console.log('Signed up successfully.');
-        res.status(200).send({ success: 'Signed up successfully.' })
-    } catch (error) {
-        console.log('Something went wrong.');
-        res.status(401).send({ error: 'Something went wrong.' })
-    }
-
 }
