@@ -1,12 +1,23 @@
 const express = require("express");
 const dotenv = require('dotenv');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 const app = express();
 
 dotenv.config({ path: './.env' });
 
-const PORT = 3000;
+mongoose.set('strictQuery', false);
+// MongoDB connection setup
+mongoose.connect(process.env.MONGODB_CONNECT,
+    { useNewUrlParser: true }, (err) => {
+      if (!err) {
+        console.log('Connected to MongoDB Atlas (finproject).');
+      } else {
+        console.log('Error in connecting to MongoDB Atlas: ' + err);
+      }
+    }
+  )
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -39,6 +50,6 @@ app.use('/message', messageRouter);
 //     app.locals.body = req.body.Body
 // })
 
-app.listen(PORT, () => {
-    console.log(`App listening on at http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+    console.log(`App listening on at http://localhost:${process.env.PORT}`);
 })

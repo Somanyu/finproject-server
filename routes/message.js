@@ -17,7 +17,10 @@ router.get('/send', (req, res) => {
         from: 'whatsapp:+14155238886',
         body: 'Hello there!',
         to: 'whatsapp:+916370112909',
-    }).then(message => console.log(message.sid))
+    }).then(message => {
+        res.status(200).send({status: "Success"})
+        console.log(message.sid)
+    })
 
 })
 
