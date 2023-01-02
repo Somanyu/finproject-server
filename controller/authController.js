@@ -20,7 +20,6 @@ exports.signUp = async (req, res) => {
         res.status(401).send({ error: 'Email already exists.' })
     } else {
 
-
         // Hash the password.
         const hashPassword = await bcrypt.hash(password, 8);
 
@@ -40,5 +39,34 @@ exports.signUp = async (req, res) => {
             res.status(401).send({ error: 'Something went wrong.' })
         }
 
+    }
+}
+
+// Create JWT for login
+const maxAge = 3 * 24 * 60 * 60;
+const createToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: maxAge
+    })
+}
+
+exports.signIn = async (req, res) => {
+    try {
+        // Check if e-mail exists in DB.
+        const user = await User.findOne({ email: req.body.email })
+        if (!user) {
+            res.status(401).send({ error: 'You are not registered.' })
+        } else {
+            const validPassword = await bcrypt.compare(req.body.password, user.password)
+            if (!validPassword) {
+                res.status(401).send({ error: 'Incorrect password.' })
+            } else {
+                const token = createToken(user._id)
+                res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 })
+                res.status(200).send({ success: 'Signed in successfully.' })
+            }
+        }
+    } catch (error) {
+        console.log(error);
     }
 }
