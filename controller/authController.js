@@ -50,6 +50,8 @@ const createToken = (id) => {
     })
 }
 
+const validTokens = [];
+
 exports.signIn = async (req, res) => {
     try {
         // Check if e-mail exists in DB.
@@ -62,6 +64,7 @@ exports.signIn = async (req, res) => {
                 res.status(401).send({ error: 'Incorrect password.' })
             } else {
                 const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+                validTokens.push(token);
                 res.json({ jwt: token });
                 // const token = createToken(user._id)
                 // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 })
@@ -70,5 +73,18 @@ exports.signIn = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+    }
+}
+
+exports.logout = async (req, res) => {
+    const {jwt} = req.body;
+    const index = validTokens.indexOf(jwt);
+    if(index !== -1){
+        validTokens.splice(index, 1);
+        console.log('Logout successful');
+        res.json({message: 'Logout successful'})
+    } else {
+        console.log('Invalid token');
+        res.status(401).json({error: 'Invalid token'})
     }
 }
