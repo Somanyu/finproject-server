@@ -56,20 +56,18 @@ exports.signIn = async (req, res) => {
         const user = await User.findOne({ email: req.body.email })
         if (!user) {
             res.status(401).send({ error: 'You are not registered.' })
+        } else {
+            const validPassword = await bcrypt.compare(req.body.password, user.password)
+            if (!validPassword) {
+                res.status(401).send({ error: 'Incorrect password.' })
+            } else {
+                const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+                res.json({ jwt: token });
+                // const token = createToken(user._id)
+                // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 })
+                // res.status(200).send({ success: 'Signed in successfully.' })
+            }
         }
-
-        // Check if password is correct.
-        const validPassword = await bcrypt.compare(req.body.password, user.password)
-        if (!validPassword) {
-            res.status(401).send({ error: 'Incorrect password.' })
-        }
-
-        const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-        res.status(200).json({ jwt: token });
-        // const token = createToken(user._id)
-        // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 })
-        // res.status(200).send({ success: 'Signed in successfully.' })
-
     } catch (error) {
         console.log(error);
     }
