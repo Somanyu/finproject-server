@@ -25,9 +25,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const messageRouter = require('./routes/message');
+const dashboardRouter = require('./routes/dashboard');
 const authRouter = require('./routes/auth');
 
 app.use('/message', messageRouter);
+app.use('/dashboard', dashboardRouter);
 app.use('/auth',authRouter);
 
 // app.get('/', (req, res) => {
