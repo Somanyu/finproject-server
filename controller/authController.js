@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../model/User");
+const { User, validate } = require("../model/User");
+const Joi = require("joi");
 
 exports.signUp = async (req, res) => {
     const firstName = req.body.firstName;
@@ -8,83 +9,75 @@ exports.signUp = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    // console.log(`First name: ${firstName}`);    
-    // console.log(`Last name: ${lastName}`);    
-    // console.log(`E-mail: ${email}`);    
-    // console.log(`password: ${password}`); 
-
-    // Check if email exists in DB.
-    const emailExists = await User.findOne({ email: email })
-    if (emailExists) {
-        console.log('Email already exists.');
-        res.status(401).send({ error: 'Email already exists.' })
-    } else {
-
-        // Hash the password.
-        const hashPassword = await bcrypt.hash(password, 8);
-
-        const user = new User({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: hashPassword
-        })
-
-        try {
-            const saveUser = await user.save()
-            console.log('Signed up successfully.');
-            res.status(200).send({ success: 'Signed up successfully.' })
-        } catch (error) {
-            console.log('Something went wrong.');
-            res.status(401).send({ error: 'Something went wrong.' })
+    try {
+        // Validate user's input data
+        const { error } = validate(req.body);
+        if (error) {
+            console.log("❌ Error in signup, req.body validation - " + error.details[0].message);
+            return res.status(400).send({ message: error.details[0].message })
         }
 
+        // Check if email exists in DB.
+        const emailExists = await User.findOne({ email: email })
+        if (emailExists) {
+            console.log('❌ Email already exists.');
+            return res.status(409).json({ message: '❌ Email already exists.' })
+        } else {
+            // Hash the password.
+            const hashPassword = await bcrypt.hash(password, 8);
+
+            const user = new User({
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                password: hashPassword
+            })
+
+            await user.save()
+            console.log('✅ Signed up successfully.');
+            res.status(201).send({ success: '✅ Signed up successfully.' })
+
+        }
+    } catch (error) {
+        res.status(500).send({ message: "❌ Internal server error." }) 
     }
 }
 
-// Create JWT for login
-const maxAge = 3 * 24 * 60 * 60;
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: maxAge
-    })
-}
-
-const validTokens = [];
 
 exports.signIn = async (req, res) => {
     try {
+        // Validate user's input data
+        const { error } = validateSignIn(req.body);
+        if (error) {
+            console.log("Error in sign in validation - " + error.details[0].message);
+            return res.status(400).send({ message: error.details[0].message })
+        }
+
         // Check if e-mail exists in DB.
         const user = await User.findOne({ email: req.body.email })
         if (!user) {
-            res.status(401).send({ error: 'You are not registered.' })
-        } else {
-            const validPassword = await bcrypt.compare(req.body.password, user.password)
-            if (!validPassword) {
-                res.status(401).send({ error: 'Incorrect password.' })
-            } else {
-                const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-                validTokens.push(token);
-                res.json({ jwt: token });
-                // const token = createToken(user._id)
-                // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 })
-                // res.status(200).send({ success: 'Signed in successfully.' })
-            }
+            return res.status(401).send({ message: 'You are not registered.' })
         }
+        const validPassword = await bcrypt.compare(req.body.password, user.password)
+        if (!validPassword) {
+            return res.status(401).send({ message: 'Incorrect email or password.' })
+        }
+
+        const token = user.generateAuthToken();
+        // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
+        // validTokens.push(token);
+        res.status(200)({ data: token, message: 'Logged in successfully' });
+
     } catch (error) {
         console.log(error);
+        res.status(500).send({ message: "Internal server error." })
     }
 }
 
-exports.logout = async (req, res) => {
-    const {jwt} = req.body;
-    const index = validTokens.indexOf(jwt);
-    if(index !== -1){
-        validTokens.splice(index, 1);
-        console.log('Logout successful');
-        res.json({message: 'Logout successful'})
-    } else {
-        console.log('Invalid token');
-        res.status(401).json({error: 'Invalid token'})
-    }
+const validateSignIn = () => {
+    const schema = Joi.object({
+        email: Joi.string().email().required().label("Email"),
+        password: Joi.string().required().label("Password"),
+    })
+    return schema.validateSignIn(data);
 }
