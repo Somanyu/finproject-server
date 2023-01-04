@@ -39,45 +39,50 @@ exports.signUp = async (req, res) => {
 
         }
     } catch (error) {
-        res.status(500).send({ message: "❌ Internal server error." }) 
+        res.status(500).send({ message: "❌ Internal server error." })
     }
 }
 
+const validateSignIn = (data) => {
+    const schema = Joi.object({
+        email: Joi.string().email().required().label("Email"),
+        password: Joi.string().required().label("Password"),
+    })
+    return schema.validate(data);
+}
 
 exports.signIn = async (req, res) => {
     try {
         // Validate user's input data
         const { error } = validateSignIn(req.body);
         if (error) {
-            console.log("Error in sign in validation - " + error.details[0].message);
+            console.log("Error in sign in validation - ❌" + error.details[0].message);
             return res.status(400).send({ message: error.details[0].message })
         }
 
         // Check if e-mail exists in DB.
         const user = await User.findOne({ email: req.body.email })
         if (!user) {
-            return res.status(401).send({ message: 'You are not registered.' })
+            console.log('❌ You are not registered.');
+            return res.status(401).send({ message: '❌ You are not registered.' })
         }
         const validPassword = await bcrypt.compare(req.body.password, user.password)
         if (!validPassword) {
-            return res.status(401).send({ message: 'Incorrect email or password.' })
+            console.log('❌ Incorrect email or password.');
+            return res.status(401).send({ message: '❌ Incorrect email or password.' })
         }
 
         const token = user.generateAuthToken();
         // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         // validTokens.push(token);
-        res.status(200)({ data: token, message: 'Logged in successfully' });
+        console.log("✅ Logged in successfully.");
+        console.log("🔑" + token + " 🔑");
+        res.status(200).send({ data: token, success: '✅ Logged in successfully' });
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: "Internal server error." })
+        res.status(500).send({ message: "❌ Internal server error." })
     }
 }
 
-const validateSignIn = () => {
-    const schema = Joi.object({
-        email: Joi.string().email().required().label("Email"),
-        password: Joi.string().required().label("Password"),
-    })
-    return schema.validateSignIn(data);
-}
+
