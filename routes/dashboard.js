@@ -31,6 +31,18 @@ router.post('/startmsg', (req, res) => {
 
 })
 
+router.post('/receive', (req, res) => {
+    const from = req.body.From;
+    const body = req.body.Body;
+
+    console.log(`🧑 From: ${from}`);
+    console.log(`📧 Message: ${body}`);
+
+    // Save the value to a variable in the response's context.
+    req.app.locals.from = from
+    req.app.locals.body = body
+})
+
 module.exports = router
 
-// https://eb7a-2405-201-a009-4a-154d-8a8e-518b-26e1.ngrok.io
+// https://67d1-2405-201-a009-4a-3c00-ba70-947d-aae9.ngrok.io/dashboard/receive
