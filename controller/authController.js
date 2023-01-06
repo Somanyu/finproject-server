@@ -21,7 +21,7 @@ exports.signUp = async (req, res) => {
         const emailExists = await User.findOne({ email: email })
         if (emailExists) {
             console.log('❌ Email already exists.');
-            return res.status(409).json({ message: '❌ Email already exists.' })
+            return res.status(409).json({ message: '❌ Email already exists' })
         } else {
             // Hash the password.
             const hashPassword = await bcrypt.hash(password, 8);
@@ -35,11 +35,11 @@ exports.signUp = async (req, res) => {
 
             await user.save()
             console.log('✅ Signed up successfully.');
-            res.status(201).send({ success: '✅ Signed up successfully.' })
+            res.status(201).send({ success: '✅ Signed up successfully' })
 
         }
     } catch (error) {
-        res.status(500).send({ message: "❌ Internal server error." })
+        res.status(500).send({ message: "❌ Internal server error" })
     }
 }
 
@@ -64,12 +64,12 @@ exports.signIn = async (req, res) => {
         const user = await User.findOne({ email: req.body.email })
         if (!user) {
             console.log('❌ You are not registered.');
-            return res.status(401).send({ message: '❌ You are not registered.' })
+            return res.status(401).send({ message: '❌ You are not registered' })
         }
         const validPassword = await bcrypt.compare(req.body.password, user.password)
         if (!validPassword) {
             console.log('❌ Incorrect email or password.');
-            return res.status(401).send({ message: '❌ Incorrect email or password.' })
+            return res.status(401).send({ message: '❌ Incorrect email or password' })
         }
 
         const token = user.generateAuthToken();
@@ -81,7 +81,7 @@ exports.signIn = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        res.status(500).send({ message: "❌ Internal server error." })
+        res.status(500).send({ message: "❌ Internal server error" })
     }
 }
 
