@@ -51,6 +51,14 @@ const validateSignIn = (data) => {
     return schema.validate(data);
 }
 
+// Create JWT for login
+const maxAge = 3 * 24 * 60 * 60;
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: maxAge
+  });
+};
+
 exports.signIn = async (req, res) => {
     try {
         // Validate user's input data
@@ -72,9 +80,8 @@ exports.signIn = async (req, res) => {
             return res.status(401).send({ message: '❌ Incorrect email or password' })
         }
 
-        const token = user.generateAuthToken();
+        const token = createToken(user._id);;
         // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
-        // validTokens.push(token);
 
         // Set the JWT token in an HTTP-only cookie
         // const maxAge = 3 * 24 * 60 * 60;

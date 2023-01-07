@@ -35,13 +35,13 @@ const userSchema = new mongoose.Schema({
 })
 
 // Generate JWT Token
-const maxAge = 3 * 24 * 60 * 60;
-userSchema.methods.generateAuthToken = () => {
-    const token = jwt.sign({_id: this._id}, process.env.JWT_SECRET, {
-        expiresIn: maxAge,
-    })
-    return token;
-}
+// const maxAge = 3 * 24 * 60 * 60;
+// userSchema.methods.generateAuthToken = () => {
+//     const token = jwt.sign({_id: this._id}, process.env.JWT_SECRET, {
+//         expiresIn: maxAge,
+//     })
+//     return token;
+// }
 
 const User = mongoose.model('User', userSchema);
 

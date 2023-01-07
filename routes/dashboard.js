@@ -9,7 +9,7 @@ function verifyJWTToken(token) {
         // Verify the JWT token and return the decoded token.
         if (token) {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log("🔓 Decoded JWT: " + decoded);
+            console.log("✅ Decoded");
             return decoded;
         } else {
             console.log("❌ Token not found.");
@@ -35,8 +35,8 @@ router.post('/startmsg', (req, res) => {
 
     try {
         const token = req.headers.cookie;
-        console.log("🔑 KEY: " + token.split("=")[1]);
-        const decoded = verifyJWTToken(token);
+        const decoded = verifyJWTToken(token.split("=")[1]);
+        
 
         if (decoded) {
             const accountSID = process.env.TWILIO_ACCOUNT_SID
@@ -82,8 +82,22 @@ router.post('/receive', (req, res) => {
     req.app.locals.body = body
 })
 
-router.get('/', requireAuth,(req, res) => {
-    console.log('SIGNED IN SUCCESSFULLY');
+router.get('/user', async (req, res) => {
+    try {
+        const token = req.headers.cookie;
+        const decoded = verifyJWTToken(token.split("=")[1]);
+
+        if (decoded) {
+            let user = await User.findById(decoded.id)
+            return res.status(200).send({ data: user })
+        }
+        else {
+            return res.status(403).send({ message: "❌ Error in fetching user details." })
+        }
+    } catch (error) {
+        console.log("❌ Error: " + error);
+        return res.status(401).send({ message: "❌ Error in JWT token." })
+    }
 })
 
 module.exports = router
