@@ -82,6 +82,25 @@ router.post('/receive', (req, res) => {
     req.app.locals.body = body
 })
 
+router.get('/user', (req, res) => {
+    const token = req.headers.cookie;
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET, async (err, decodedToken) => {
+            if (err) {
+                res.locals.user = null;
+                return res.locals.user;
+            } else {
+                let user = await User.findById(decodedToken.id);
+                // res.locals.user = user;
+                return res.status(200).send({ data: user });
+            }
+        })
+    } else {
+        res.locals.user = null;
+        return res.locals.user;
+    }
+})
+
 module.exports = router
 
-// https://67d1-2405-201-a009-4a-3c00-ba70-947d-aae9.ngrok.io/dashboard/receive
+// https://af7b-2405-201-a009-43-f160-cd34-392e-953.ngrok.io/dashboard/receive
