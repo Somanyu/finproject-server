@@ -75,9 +75,14 @@ exports.signIn = async (req, res) => {
         const token = user.generateAuthToken();
         // const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
         // validTokens.push(token);
+
+        // Set the JWT token in an HTTP-only cookie
+        // const maxAge = 3 * 24 * 60 * 60;
+        // res.cookie('jwt', token, { httpOnly: true });
+
         console.log("✅ Logged in successfully.");
-        console.log("🔑" + token + " 🔑");
-        res.status(200).send({ data: token, success: '✅ Logged in successfully' });
+        console.log("🔑 " + token + " 🔑");
+        res.status(200).send({ token: token, success: '✅ Logged in successfully' });
 
     } catch (error) {
         console.log(error);
