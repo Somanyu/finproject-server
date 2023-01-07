@@ -9,7 +9,7 @@ const requireAuth = (req, res, next) => {
         jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
             if(err) {
                 console.log(err.message)
-                res.status(401).json({error: 'You need to sign in.'})
+                res.status(401).send({error: 'You need to sign in.'})
             } else {
                 console.log(decodedToken);
                 // res.json({data: 'This is protected data.'})
