@@ -16,6 +16,12 @@ const userSchema = new mongoose.Schema({
         min: 3,
         max: 30
     },
+    avatar: {
+        type: String,
+        default: function () {
+            return `https://avatars.dicebear.com/api/micah/${this.firstName}.svg`
+        }
+    },
     email: {
         type: String,
         required: true,
@@ -56,4 +62,4 @@ const validate = (data) => {
     return schema.validate(data)
 }
 
-module.exports = {User, validate};
+module.exports = { User, validate };

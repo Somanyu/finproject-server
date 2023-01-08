@@ -89,6 +89,7 @@ router.get('/user', async (req, res) => {
 
         if (decoded) {
             let user = await User.findById(decoded.id)
+            console.log("✅ User data sent.");
             return res.status(200).send({ data: user })
         }
         else {
