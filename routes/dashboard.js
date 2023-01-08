@@ -22,12 +22,26 @@ function verifyJWTToken(token) {
 }
 
 
-// router.get('/', (req, res) => {
-//     console.log('SIGNED IN SUCCESSFULLY');
-//     const token = req.cookies.jwt;
-//     const user = validateJWTToken(token);
-//     console.log("🧑 User" + user);
-// })
+const userData = async (req, res, next) => {
+    try {
+        const token = req.headers.cookie;
+        const decoded = verifyJWTToken(token.split("=")[1]);
+
+        if (decoded) {
+            let user = await User.findById(decoded.id)
+            
+            console.log("✅ User data sent.");
+            // next();
+            return res.status(200).send({ data: user })
+        }
+        else {
+            return res.status(403).send({ message: "❌ Error in fetching user details." })
+        }
+    } catch (error) {
+        console.log("❌ Error: " + error);
+        return res.status(401).send({ message: "❌ Error in JWT token" })
+    }
+}
 
 
 
@@ -36,7 +50,6 @@ router.post('/startmsg', (req, res) => {
     try {
         const token = req.headers.cookie;
         const decoded = verifyJWTToken(token.split("=")[1]);
-        
 
         if (decoded) {
             const accountSID = process.env.TWILIO_ACCOUNT_SID
@@ -65,11 +78,12 @@ router.post('/startmsg', (req, res) => {
         }
     } catch (error) {
         console.log("❌ Error: " + error);
-        return res.status(401).send({ message: "❌ Error in JWT token." })
+        return res.status(401).send({ message: "❌ Error in sending message" })
     }
 
 })
 
+// https://e2a8-2405-201-a009-43-2977-492d-11e0-261c.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
@@ -82,23 +96,6 @@ router.post('/receive', (req, res) => {
     req.app.locals.body = body
 })
 
-router.get('/user', async (req, res) => {
-    try {
-        const token = req.headers.cookie;
-        const decoded = verifyJWTToken(token.split("=")[1]);
-
-        if (decoded) {
-            let user = await User.findById(decoded.id)
-            console.log("✅ User data sent.");
-            return res.status(200).send({ data: user })
-        }
-        else {
-            return res.status(403).send({ message: "❌ Error in fetching user details." })
-        }
-    } catch (error) {
-        console.log("❌ Error: " + error);
-        return res.status(401).send({ message: "❌ Error in JWT token." })
-    }
-})
+router.get('/user', userData);
 
 module.exports = router
