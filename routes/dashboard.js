@@ -29,7 +29,7 @@ const userData = async (req, res, next) => {
 
         if (decoded) {
             let user = await User.findById(decoded.id)
-
+            req.app.locals.user = user
             console.log("✅ User data sent.");
             next();
             return res.status(200).send({ data: user })
@@ -45,37 +45,30 @@ const userData = async (req, res, next) => {
 
 
 
-router.post('/startmsg', (req, res) => {
+router.post('/startmsg', userData, (req, res) => {
+    const user = res.app.locals.user;
+    const phone = user.phone
+    // console.log(user.phone);
 
     try {
-        const token = req.headers.cookie;
-        const decoded = verifyJWTToken(token.split("=")[1]);
 
-        if (decoded) {
-            const accountSID = process.env.TWILIO_ACCOUNT_SID
-            const authToken = process.env.TWILIO_AUTH_TOKEN
-            const client = require("twilio")(accountSID, authToken)
+        const accountSID = process.env.TWILIO_ACCOUNT_SID
+        const authToken = process.env.TWILIO_AUTH_TOKEN
+        const client = require("twilio")(accountSID, authToken)
 
-            const phone = req.body.phone;
-
-            // Create a message instance.
-            client.messages.create({
-                from: 'whatsapp:+14155238886',
-                body: 'Hello there!',
-                to: `whatsapp:+91${phone}`,
-            }).then(message => {
-                console.log("✅ Message sent ")
-                console.log("📬 Message SID " + message.sid)
-                return res.status(200).send({ success: "✅ Message sent" })
-            }).catch(error => {
-                console.log(`❌ Error in sending - ${error}`);
-                return res.status(500).send({ message: `❌ ${error}` })
-            })
-        }
-        else {
-            console.log("❌ JWT not verified.");
-            return res.status(401).send({ message: "❌ JWT not verified." })
-        }
+        // Create a message instance.
+        client.messages.create({
+            from: 'whatsapp:+14155238886',
+            body: 'Hello there!',
+            to: `whatsapp:+91${phone}`,
+        }).then(message => {
+            console.log("✅ Message sent ")
+            console.log("📬 Message SID " + message.sid)
+            return res.status(200).send({ success: "✅ Message sent" })
+        }).catch(error => {
+            console.log(`❌ Error in sending - ${error}`);
+            return res.status(500).send({ message: `❌ ${error}` })
+        })
     } catch (error) {
         console.log("❌ Error: " + error);
         return res.status(401).send({ message: "❌ Error in sending message" })
