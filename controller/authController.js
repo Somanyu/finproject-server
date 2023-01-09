@@ -6,6 +6,8 @@ const Joi = require("joi");
 exports.signUp = async (req, res) => {
     const firstName = req.body.firstName;
     const lastName = req.body.lastName;
+    const phone = req.body.phone;
+    const gender = req.body.gender;
     const email = req.body.email;
     const password = req.body.password;
 
@@ -29,6 +31,8 @@ exports.signUp = async (req, res) => {
             const user = new User({
                 firstName: firstName,
                 lastName: lastName,
+                phone: phone,
+                gender: gender,
                 email: email,
                 password: hashPassword
             })

@@ -22,6 +22,16 @@ const userSchema = new mongoose.Schema({
             return `https://avatars.dicebear.com/api/micah/${this.firstName}.svg`
         }
     },
+    phone: {
+        type: String,
+        required: true,
+        min: 10,
+        max: 10
+    },
+    gender :{
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -56,6 +66,8 @@ const validate = (data) => {
     const schema = Joi.object({
         firstName: Joi.string().required().label("First name"),
         lastName: Joi.string().required().label("Last name"),
+        phone: Joi.string().required().label("Phone"),
+        gender: Joi.string().required().label("Gender"),
         email: Joi.string().email().required().label("Email"),
         password: passwordComplexity().required().label("Password"),
     })

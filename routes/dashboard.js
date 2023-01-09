@@ -29,9 +29,9 @@ const userData = async (req, res, next) => {
 
         if (decoded) {
             let user = await User.findById(decoded.id)
-            
+
             console.log("✅ User data sent.");
-            // next();
+            next();
             return res.status(200).send({ data: user })
         }
         else {
