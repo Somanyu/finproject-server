@@ -32,7 +32,7 @@ const userData = async (req, res, next) => {
             req.app.locals.user = user
             console.log("✅ User data sent.");
             next();
-            return res.status(200).send({ data: user })
+            // return res.status(200).send({ data: user })
         }
         else {
             return res.status(403).send({ message: "❌ Error in fetching user details." })
@@ -47,6 +47,7 @@ const userData = async (req, res, next) => {
 
 router.post('/startmsg', userData, (req, res) => {
     const user = res.app.locals.user;
+    const firstName = user.firstName
     const phone = user.phone
     // console.log(user.phone);
 
@@ -59,7 +60,7 @@ router.post('/startmsg', userData, (req, res) => {
         // Create a message instance.
         client.messages.create({
             from: 'whatsapp:+14155238886',
-            body: 'Hello there!',
+            body: `Hello ${firstName}!`,
             to: `whatsapp:+91${phone}`,
         }).then(message => {
             console.log("✅ Message sent ")
@@ -89,6 +90,9 @@ router.post('/receive', (req, res) => {
     req.app.locals.body = body
 })
 
-router.get('/user', userData);
+router.get('/user', userData , (req, res) => {
+    const user = res.app.locals.user;
+    return res.status(200).send({ data: user })
+});
 
 module.exports = router
