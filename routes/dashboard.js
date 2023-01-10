@@ -1,4 +1,5 @@
 const express = require('express');
+const { date } = require('joi');
 const jwt = require('jsonwebtoken');
 const { User } = require('../model/User');
 const router = express.Router();
@@ -60,7 +61,10 @@ router.post('/startmsg', userData, (req, res) => {
         // Create a message instance.
         client.messages.create({
             from: 'whatsapp:+14155238886',
-            body: `Hello ${firstName}!`,
+            body: `Hello ${firstName} 👋 !
+Welcome to our app! We're excited to have you join us and hope you have a great time using our app.
+
+➕ Add your expenses by sending a text *Add Milk 20*`,
             to: `whatsapp:+91${phone}`,
         }).then(message => {
             console.log("✅ Message sent ")
@@ -77,7 +81,7 @@ router.post('/startmsg', userData, (req, res) => {
 
 })
 
-// https://e2a8-2405-201-a009-43-2977-492d-11e0-261c.ngrok.io/dashboard/receive
+// https://50fb-2405-201-a009-9-8507-f0e7-62ff-9aa2.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
@@ -90,7 +94,7 @@ router.post('/receive', (req, res) => {
     req.app.locals.body = body
 })
 
-router.get('/user', userData , (req, res) => {
+router.get('/user', userData, (req, res) => {
     const user = res.app.locals.user;
     return res.status(200).send({ data: user })
 });
