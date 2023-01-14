@@ -3,6 +3,9 @@ const { date } = require('joi');
 const jwt = require('jsonwebtoken');
 const { User } = require('../model/User');
 const router = express.Router();
+const natural = require('natural');
+const tokenizer = new natural.WordTokenizer();
+const stemmer = natural.PorterStemmer;
 // const requireAuth = require('../middleware/authMiddleware');
 
 function verifyJWTToken(token) {
@@ -81,13 +84,32 @@ Welcome to our app! We're excited to have you join us and hope you have a great 
 
 })
 
-// https://50fb-2405-201-a009-9-8507-f0e7-62ff-9aa2.ngrok.io/dashboard/receive
+// https://bb11-2405-201-a009-9-85e0-43b2-70ef-3818.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
 
     console.log(`🧑 From: ${from}`);
     console.log(`📧 Message: ${body}`);
+
+    const tokenizedText = tokenizer.tokenize(body);
+    let stemmedText = tokenizedText.map(word => stemmer.stem(word));
+    if(stemmedText.includes("add")){
+        let item = stemmedText.filter(word => word !== "add");
+        console.log(`The Item to be added: ${item[0]} of Price: ${item[1]}`);
+        // console.log(item);
+    } else {
+        console.log("The sentence does not contain the keyword 'add'");
+    }
+
+    // const tokens = tokenizer.tokenize(body);
+    // console.log({ tokens });
+    // if (tokens.includes("add")) {
+    //     console.log("The text contains the word 'add'");
+    // } else if (tokens.includes("minus")) {
+    //     res.send("The text contains the word 'minus'");
+    // }
+
 
     // Save the value to a variable in the response's context.
     req.app.locals.from = from

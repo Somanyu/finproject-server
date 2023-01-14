@@ -21,6 +21,7 @@
     "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.2",
+    "natural": "^6.1.2",
     "twilio": "^3.84.0"
   },
   "devDependencies": {
