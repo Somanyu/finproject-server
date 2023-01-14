@@ -50,7 +50,7 @@ router.post('/startmsg', userData, (req, res) => {
     const user = res.app.locals.user;
     const firstName = user.firstName
     const phone = user.phone
-    // console.log(user.phone);
+    // https://wa.me/4155238886?text=join%20discover-series
 
     try {
 
