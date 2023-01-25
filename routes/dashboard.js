@@ -84,7 +84,8 @@ Welcome to our app! We're excited to have you join us and hope you have a great 
 
 })
 
-// https://bb11-2405-201-a009-9-85e0-43b2-70ef-3818.ngrok.io/dashboard/receive
+
+// https://5b18-2405-201-a009-2e-8d29-39c8-38df-469f.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
@@ -94,22 +95,13 @@ router.post('/receive', (req, res) => {
 
     const tokenizedText = tokenizer.tokenize(body);
     let stemmedText = tokenizedText.map(word => stemmer.stem(word));
-    if(stemmedText.includes("add")){
+    if (stemmedText.includes("add")) {
         let item = stemmedText.filter(word => word !== "add");
-        console.log(`The Item to be added: ${item[0]} of Price: ${item[1]}`);
+        console.log(`⚪ The Item to be added: ${item[0]} of Price: ${item[1]}`);
         // console.log(item);
     } else {
-        console.log("The sentence does not contain the keyword 'add'");
+        console.log("❌ The sentence does not contain the keyword 'add'");
     }
-
-    // const tokens = tokenizer.tokenize(body);
-    // console.log({ tokens });
-    // if (tokens.includes("add")) {
-    //     console.log("The text contains the word 'add'");
-    // } else if (tokens.includes("minus")) {
-    //     res.send("The text contains the word 'minus'");
-    // }
-
 
     // Save the value to a variable in the response's context.
     req.app.locals.from = from
