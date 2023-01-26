@@ -85,21 +85,65 @@ Welcome to our app! We're excited to have you join us and hope you have a great 
 })
 
 
-// https://5b18-2405-201-a009-2e-8d29-39c8-38df-469f.ngrok.io/dashboard/receive
+const sendReply = (phone, text) => {
+    try {
+
+        const accountSID = process.env.TWILIO_ACCOUNT_SID
+        const authToken = process.env.TWILIO_AUTH_TOKEN
+        const client = require("twilio")(accountSID, authToken)
+
+        // Create a message instance.
+        client.messages.create({
+            from: 'whatsapp:+14155238886',
+            body: `${text}`,
+            to: `whatsapp:+91${phone}`,
+        }).then(message => {
+            console.log("✅ Reply sent ")
+            console.log("📬 Message SID " + message.sid)
+            // return res.status(200).send({ success: "✅ Message sent" })
+        }).catch(error => {
+            client.messages.create({
+                from: 'whatsapp:+14155238886',
+                body: `${text}`,
+                to: `whatsapp:+91${phone}`
+            })
+            console.log(`❌ Error in sending reply - ${error}`);
+            // return res.status(500).send({ message: `❌ ${error}` })
+        })
+    } catch (error) {
+        console.log("❌ Error in sending reply: " + error);
+        // return res.status(401).send({ message: "❌ Error in sending message" })
+    }
+}
+
+// https://73f7-49-37-117-84.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
 
-    console.log(`🧑 From: ${from}`);
-    console.log(`📧 Message: ${body}`);
+    // console.log(`🧑 From: ${from}`);
+    // console.log(`📧 Message: ${body}`);
+
+    // User details in app.locals context
+    const user = res.app.locals.user;
+    const phone = user.phone
 
     const tokenizedText = tokenizer.tokenize(body);
-    let stemmedText = tokenizedText.map(word => stemmer.stem(word));
-    if (stemmedText.includes("add")) {
-        let item = stemmedText.filter(word => word !== "add");
-        console.log(`⚪ The Item to be added: ${item[0]} of Price: ${item[1]}`);
+    // let stemmedText = tokenizedText.map(word => stemmer.stem(word));
+    if (tokenizedText.includes("Add")) {
+        let item = tokenizedText.filter(word => word !== "add");
+        if (!isNaN(item[2])) {
+            let text = `⚪ The Item to be added: *${item[1]}* of Price: *${item[2]}*`
+            sendReply(phone, text);
+        } else {
+            let text = "❌ Price not mentioned"
+            sendReply(phone, text)
+        }
+        // console.log(`⚪ The Item to be added: ${item[0]} of Price: ${item[1]}`);
         // console.log(item);
     } else {
+        let text = "❌ The sentence does not contain the keyword *'Add'*"
+        sendReply(phone, text)
         console.log("❌ The sentence does not contain the keyword 'add'");
     }
 
