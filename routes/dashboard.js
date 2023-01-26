@@ -116,6 +116,21 @@ const sendReply = (phone, text) => {
     }
 }
 
+
+const addExpenses = (id, product, price) => {
+    User.findByIdAndUpdate(id, { $push: { expenses: { product: product, price: price } } }, (err, res) => {
+        if (err) {
+            return err
+        } else {
+            let text = `${product} added with ${price}.`
+            console.log(`✅ ${product} added`);
+            // return text;
+        }
+
+    })
+}
+
+
 // https://73f7-49-37-117-84.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
@@ -126,21 +141,22 @@ router.post('/receive', (req, res) => {
 
     // User details in app.locals context
     const user = res.app.locals.user;
-    const phone = user.phone
+    const id = user.id;
+    const phone = user.phone;
 
     const tokenizedText = tokenizer.tokenize(body);
     // let stemmedText = tokenizedText.map(word => stemmer.stem(word));
     if (tokenizedText.includes("Add")) {
         let item = tokenizedText.filter(word => word !== "add");
         if (!isNaN(item[2])) {
-            let text = `⚪ The Item to be added: *${item[1]}* of Price: *${item[2]}*`
+            let text = `🛍️ Added: *${item[1]}* of Price: *${item[2]}*`
+            console.log(`🛍️ Added: ${item[1]} of Price: ${item[2]}`);
+            addExpenses(id, item[1], item[2])
             sendReply(phone, text);
         } else {
             let text = "❌ Price not mentioned"
-            sendReply(phone, text)
+            sendReply(phone, text);
         }
-        // console.log(`⚪ The Item to be added: ${item[0]} of Price: ${item[1]}`);
-        // console.log(item);
     } else {
         let text = "❌ The sentence does not contain the keyword *'Add'*"
         sendReply(phone, text)

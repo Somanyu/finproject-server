@@ -3,6 +3,13 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi')
 const passwordComplexity = require('joi-password-complexity')
 
+// Define the schema for expenses sub-document
+const expenseSchema = new mongoose.Schema({
+    product: {type: String},
+    price: {type: Number}
+})
+
+// Define the schema for User document
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -44,6 +51,7 @@ const userSchema = new mongoose.Schema({
         min: 8,
         max: 16
     },
+    expenses: [expenseSchema],
     date: {
         type: Date,
         default: Date.now
