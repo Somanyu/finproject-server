@@ -12,19 +12,35 @@
   "author": "Somanyu",
   "license": "ISC",
   "dependencies": {
+    "assert": "^2.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.1",
+    "browserify-zlib": "^0.2.0",
+    "constants-browserify": "^1.0.0",
     "cors": "^2.8.5",
+    "crypto-browserify": "^3.12.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "fs-extra": "^11.1.0",
+    "https-browserify": "^1.0.0",
     "joi": "^17.7.0",
     "joi-password-complexity": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.8.2",
     "natural": "^6.1.2",
-    "twilio": "^3.84.0"
+    "net": "^1.0.2",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "tls-browserify": "^0.2.2",
+    "twilio": "^3.84.0",
+    "url": "^0.11.0",
+    "util": "^0.12.5",
+    "webpack-cli": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "webpack": "^5.75.0"
   }
 }
