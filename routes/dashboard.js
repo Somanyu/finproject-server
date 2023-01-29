@@ -131,7 +131,7 @@ const addExpenses = (id, product, price) => {
 }
 
 
-// https://73f7-49-37-117-84.ngrok.io/dashboard/receive
+// https://4b48-2405-201-a009-1d-d6c-eec5-91d-3c4c.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
@@ -148,10 +148,16 @@ router.post('/receive', (req, res) => {
     // let stemmedText = tokenizedText.map(word => stemmer.stem(word));
     if (tokenizedText.includes("Add")) {
         let item = tokenizedText.filter(word => word !== "add");
-        if (!isNaN(item[2])) {
-            let text = `🛍️ Added: *${item[1]}* of Price: *${item[2]}*`
-            console.log(`🛍️ Added: ${item[1]} of Price: ${item[2]}`);
-            addExpenses(id, item[1], item[2])
+
+        // Product name
+        let product = item[1].charAt(0).toUpperCase() + item[1].slice(1);
+        // Product price
+        let price = item[2];
+
+        if (!isNaN(price)) {
+            let text = `🎉 Added: *${product}* of Price: *${price}*`
+            console.log(`🎉 Added: ${product} of Price: ${price}`);
+            addExpenses(id, product, price)
             sendReply(phone, text);
         } else {
             let text = "❌ Price not mentioned"
