@@ -131,7 +131,16 @@ const addExpenses = (id, product, price) => {
 }
 
 
-// https://4b48-2405-201-a009-1d-d6c-eec5-91d-3c4c.ngrok.io/dashboard/receive
+const showExpenses = async (id) => {
+    try {
+        const docs = await User.findById(id);
+        return docs;
+    } catch (err) {
+        return err;
+    }
+}
+
+// https://347a-2405-201-a009-1d-1831-3b49-874e-3d7d.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
@@ -163,6 +172,23 @@ router.post('/receive', (req, res) => {
             let text = "❌ Price not mentioned"
             sendReply(phone, text);
         }
+    } else if (tokenizedText.includes("Show")) {
+        async function handleExpenses() {
+            const data = await showExpenses(id);
+            
+            let dataString = ""
+            let totalExpenses = 0
+            for(let i = 0; i < data.expenses.length; i++) {
+                dataString += `Product - ${data.expenses[i].product}, Price - ${data.expenses[i].price}\n`;
+                totalExpenses += data.expenses[i].price
+            }
+            console.log("📚 Expenses Shown - ", dataString);
+            console.log("‼ Total expenses - ", totalExpenses);
+            sendReply(phone, dataString);
+            sendReply(phone, `💰 Total expenses: *${totalExpenses}*`);
+        }
+        handleExpenses();
+
     } else {
         let text = "❌ The sentence does not contain the keyword *'Add'*"
         sendReply(phone, text)
