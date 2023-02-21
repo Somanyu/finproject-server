@@ -152,7 +152,7 @@ router.post('/receive', (req, res) => {
 
     // User details in app.locals context
     const user = res.app.locals.user;
-    console.log("🧑 Logged in user: ", res.app.locals);
+    console.log("🧑 Logged in user: ", app.locals);
     const id = user.id;
     const phone = user.phone;
 
@@ -204,7 +204,7 @@ router.post('/receive', (req, res) => {
 })
 
 router.get('/user', userData, (req, res) => {
-    const user = res.app.locals.user;
+    const user = app.locals.user;
     return res.status(200).send({ data: user })
 });
 
