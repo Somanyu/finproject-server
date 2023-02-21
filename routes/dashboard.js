@@ -144,6 +144,7 @@ const showExpenses = async (id) => {
 }
 
 // https://finproject-server.onrender.com/dashboard/receive
+// https://7d77-2405-201-a009-13-f4cc-dd7d-67d0-5d68.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
@@ -153,7 +154,7 @@ router.post('/receive', (req, res) => {
 
     // User details in app.locals context
     const user = res.app.locals.user;
-    console.log("🧑 Logged in user: ", user);
+    console.log("🧑 Logged in user: ", res.app.locals);
     const id = user.id;
     const phone = user.phone;
 
