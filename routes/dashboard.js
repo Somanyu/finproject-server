@@ -28,6 +28,7 @@ function verifyJWTToken(token) {
 
 const userData = async (req, res, next) => {
     try {
+        console.log("🍪 Cookies", req.headers.cookie)
         const token = req.headers.cookie;
         const decoded = verifyJWTToken(token.split("=")[1]);
 
@@ -141,16 +142,17 @@ const showExpenses = async (id) => {
     }
 }
 
-// https://9828-2405-201-a009-13-bc18-e9c2-a52a-35fe.ngrok.io/dashboard/receive
-router.post('/receive', (req, res) => {
+// https://finproject-server.onrender.com/dashboard/receive
+router.put('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
 
-    // console.log(`🧑 From: ${from}`);
-    // console.log(`📧 Message: ${body}`);
+    console.log(`🧑 From: ${from}`);
+    console.log(`📧 Message: ${body}`);
 
     // User details in app.locals context
     const user = res.app.locals.user;
+    console.log("🧑 Logged in user: ", user);
     const id = user.id;
     const phone = user.phone;
 
