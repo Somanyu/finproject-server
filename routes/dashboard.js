@@ -143,7 +143,7 @@ const showExpenses = async (id) => {
     }
 }
 
-// https://finproject-server.onrender.com/dashboard/receive
+// https://finproject-server-production.up.railway.app/dashboard/receive
 // https://7d77-2405-201-a009-13-f4cc-dd7d-67d0-5d68.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
