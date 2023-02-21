@@ -143,7 +143,7 @@ const showExpenses = async (id) => {
 }
 
 // https://finproject-server.onrender.com/dashboard/receive
-router.put('/receive', (req, res) => {
+router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
 
