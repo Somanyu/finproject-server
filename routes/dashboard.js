@@ -67,7 +67,8 @@ router.post('/startmsg', userData, (req, res) => {
             body: `Hello ${firstName} 👋 !
 Welcome to our app! We're excited to have you join us and hope you have a great time using our app.
 
-➕ Add your expenses by sending a text *Add Milk 20*`,
+✅ Add your expenses by sending a text *Add Milk 20*
+💸 See all your expenses by sending *Show*`,
             to: `whatsapp:+91${phone}`,
         }).then(message => {
             console.log("✅ Message sent ")
@@ -140,7 +141,7 @@ const showExpenses = async (id) => {
     }
 }
 
-// https://347a-2405-201-a009-1d-1831-3b49-874e-3d7d.ngrok.io/dashboard/receive
+// https://9828-2405-201-a009-13-bc18-e9c2-a52a-35fe.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
     const body = req.body.Body;
@@ -175,10 +176,10 @@ router.post('/receive', (req, res) => {
     } else if (tokenizedText.includes("Show")) {
         async function handleExpenses() {
             const data = await showExpenses(id);
-            
+
             let dataString = ""
             let totalExpenses = 0
-            for(let i = 0; i < data.expenses.length; i++) {
+            for (let i = 0; i < data.expenses.length; i++) {
                 dataString += `Product - ${data.expenses[i].product}, Price - ${data.expenses[i].price}\n`;
                 totalExpenses += data.expenses[i].price
             }

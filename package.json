@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "devstart": "nodemon index.js",
-    "serverstart": "SET DEBUG=librarymgmt:* & npm run devstart",
+    "serverstart": "SET DEBUG=finproject-server:* & npm run devstart",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Somanyu",

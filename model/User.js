@@ -5,8 +5,8 @@ const passwordComplexity = require('joi-password-complexity')
 
 // Define the schema for expenses sub-document
 const expenseSchema = new mongoose.Schema({
-    product: {type: String},
-    price: {type: Number}
+    product: { type: String },
+    price: { type: Number }
 })
 
 // Define the schema for User document
@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     avatar: {
         type: String,
         default: function () {
-            return `https://avatars.dicebear.com/api/micah/${this.firstName}.svg`
+            return `https://api.dicebear.com/5.x/big-smile/svg?seed=${this.firstName}`
         }
     },
     phone: {
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
         min: 10,
         max: 10
     },
-    gender :{
+    gender: {
         type: String,
         required: true
     },
