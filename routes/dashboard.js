@@ -35,7 +35,7 @@ const userData = async (req, res, next) => {
         if (decoded) {
             let user = await User.findById(decoded.id)
             app.locals.user = user
-            // console.log("🧑 Logged in user: ", app.locals.user)
+            console.log("🧑 Logged in user (useData): ", app.locals.user)
             console.log("✅ User data sent.");
             next();
             // return res.status(200).send({ data: user })
@@ -154,7 +154,7 @@ router.post('/receive', (req, res) => {
 
     // User details in app.locals context
     const user = app.locals.user;
-    // console.log("🧑 Logged in user: ", res.app.locals);
+    console.log("🧑 Logged in user (/receive): ", app.locals);
     const id = user.id;
     const phone = user.phone;
 
