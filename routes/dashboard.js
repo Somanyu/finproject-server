@@ -49,7 +49,7 @@ const userData = async (req, res, next) => {
     }
 }
 
-
+const user = app.locals.user
 
 router.post('/startmsg', userData, (req, res) => {
     const user1 = app.locals.user;
@@ -153,7 +153,7 @@ router.post('/receive', (req, res) => {
     console.log(`📧 Message: ${body}`);
 
     // User details in app.locals context
-    const user = app.locals.user;
+    // const user = app.locals.user;
     console.log("🧑 Logged in user (/receive): ", app.locals);
     const id = user.id;
     const phone = user.phone;
