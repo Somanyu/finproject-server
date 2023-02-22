@@ -143,7 +143,7 @@ const showExpenses = async (id) => {
     }
 }
 
-// https://finproject-server-production.up.railway.app/dashboard/receive
+// https://finproject-server.azurewebsites.net/dashboard/receive
 // https://7d77-2405-201-a009-13-f4cc-dd7d-67d0-5d68.ngrok.io/dashboard/receive
 router.post('/receive', (req, res) => {
     const from = req.body.From;
@@ -153,8 +153,8 @@ router.post('/receive', (req, res) => {
     console.log(`📧 Message: ${body}`);
 
     // User details in app.locals context
-    const user = app.locals.user;
-    console.log("🧑 Logged in user (/receive): ", app.locals);
+    const user = res.app.locals.user;
+    console.log("🧑 Logged in user (/receive): ", res.app.locals);
     const id = user.id;
     const phone = user.phone;
 
