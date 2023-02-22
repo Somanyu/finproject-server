@@ -52,9 +52,9 @@ const userData = async (req, res, next) => {
 
 
 router.post('/startmsg', userData, (req, res) => {
-    const user = app.locals.user;
-    const firstName = user.firstName
-    const phone = user.phone
+    const user1 = app.locals.user;
+    const firstName = user1.firstName
+    const phone = user1.phone
     // https://wa.me/4155238886?text=join%20discover-series
 
     try {
@@ -153,8 +153,8 @@ router.post('/receive', (req, res) => {
     console.log(`📧 Message: ${body}`);
 
     // User details in app.locals context
-    const user = res.app.locals.user;
-    console.log("🧑 Logged in user (/receive): ", res.app.locals);
+    const user = app.locals.user;
+    console.log("🧑 Logged in user (/receive): ", app.locals);
     const id = user.id;
     const phone = user.phone;
 
@@ -201,8 +201,8 @@ router.post('/receive', (req, res) => {
     }
 
     // Save the value to a variable in the response's context.
-    req.app.locals.from = from
-    req.app.locals.body = body
+    // req.app.locals.from = from
+    // req.app.locals.body = body
 })
 
 router.get('/user', userData, (req, res) => {
