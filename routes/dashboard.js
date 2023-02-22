@@ -1,8 +1,8 @@
 const express = require('express');
-const { date } = require('joi');
 const jwt = require('jsonwebtoken');
 const { User } = require('../model/User');
 const router = express.Router();
+const app = express();
 const natural = require('natural');
 const tokenizer = new natural.WordTokenizer();
 const stemmer = natural.PorterStemmer;
@@ -28,14 +28,14 @@ function verifyJWTToken(token) {
 
 const userData = async (req, res, next) => {
     try {
-        console.log("🍪 Cookies", req.headers.cookie)
+        // console.log("🍪 Cookies", req.headers.cookie)
         const token = req.headers.cookie;
         const decoded = verifyJWTToken(token.split("=")[1]);
 
         if (decoded) {
             let user = await User.findById(decoded.id)
-            req.app.locals.user = user
-            console.log("🧑 Logged in user: ", req.app.locals.user)
+            app.locals.user = user
+            // console.log("🧑 Logged in user: ", app.locals.user)
             console.log("✅ User data sent.");
             next();
             // return res.status(200).send({ data: user })
@@ -52,7 +52,7 @@ const userData = async (req, res, next) => {
 
 
 router.post('/startmsg', userData, (req, res) => {
-    const user = res.app.locals.user;
+    const user = app.locals.user;
     const firstName = user.firstName
     const phone = user.phone
     // https://wa.me/4155238886?text=join%20discover-series
@@ -153,8 +153,8 @@ router.post('/receive', (req, res) => {
     console.log(`📧 Message: ${body}`);
 
     // User details in app.locals context
-    const user = res.app.locals.user;
-    console.log("🧑 Logged in user: ", res.app.locals);
+    const user = app.locals.user;
+    // console.log("🧑 Logged in user: ", res.app.locals);
     const id = user.id;
     const phone = user.phone;
 
@@ -206,7 +206,7 @@ router.post('/receive', (req, res) => {
 })
 
 router.get('/user', userData, (req, res) => {
-    const user = res.app.locals.user;
+    const user = app.locals.user;
     return res.status(200).send({ data: user })
 });
 
