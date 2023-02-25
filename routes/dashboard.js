@@ -28,8 +28,9 @@ function verifyJWTToken(token) {
 
 const userData = async (req, res, next) => {
     try {
-        // console.log("🍪 Cookies", req.headers.cookie)
+        // console.log("🍪 Cookies", req.headers)
         const token = req.headers.cookie;
+        console.log("TOKEN --- ", token);
         const decoded = verifyJWTToken(token.split("=")[1]);
 
         if (decoded) {
